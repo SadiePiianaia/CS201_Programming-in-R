@@ -1,6 +1,6 @@
 ---
 title: "Assignment 3: Wrangling penguins with dplyr"
-subtitle: "STUDENT NAME"
+subtitle: "Sadie Piianaia"
 author: "Amber Camp"
 date: "9/11/26"
 format: html
