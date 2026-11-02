@@ -1,10 +1,26 @@
 ---
 title: "Assignment 4: Exploratory Data Analysis"
-author: "Your Name"
-date: "`r Sys.Date()`"
+<<<<<<< HEAD
+author: "Sadie Piianaia"
+date: "`r Sys.Date(2026/10/09)`"
+=======
+author: "Sadie Piianaia"
+date: "`r Sys.Date(2026/11/01)`"
+>>>>>>> c6875478ad54e1702f2f0ac40575f9792b4f2bcc
 format: html
 editor: visual
 ---
+# Author's note:
+
+Aloha to whom this may concern,
+
+As we've spoken before, I always have strange and extreme circumstances against my best efforts and wishes. This note is just to say that I have a R studio warning that says "Version control conflict markers detected. Please resolve them before editing in visual mode.".
+
+I have done this to the best of my ability with checking my work and rendering where possible but most of this I check with my eyes without running. 
+
+Parts 1 and 2 were done while I was able to see the assignment as normal "Visual" mode, but the rest was done in "Source" mode. I apologize if there are any errors and will accept partial credit if so.
+
+Mahalo.
 
 ## Overview
 
@@ -29,24 +45,84 @@ Part 1 is worth a total of 1 point, and Part 2 is worth 4 points (1 point for ea
 
 ```{r, message=FALSE}
 library(tidyverse)
+library(janitor)
+library(datasauRus)
 
 # mydata <- read_csv("data/your_dataset.csv")
+forest_fires <- read_csv("data/forestfires.csv")
 
 ```
 
 ### Describe your data
 
-Data author:
+\<\<\<\<\<\<\< HEAD Data author: The listed contributor is Sumit Mishra (Owner)
 
-Link:
+Link: <https://www.kaggle.com/datasets/sumitm004/forest-fire-area>
 
-Description:
+Description: [**Forest Fire Area Dataset Prediction of the burnt area by forest fires**]{.underline}
+
+This dataset contains information about **forest fires**, including their location (coordinate on a localized map from 1 to 9), date, temperature, humidity, wind speed, and fire area (in hectares).
+
+Column descriptions (in column CSV description):
+
+- **X:** x-axis spatial coordinate within the Montesinho park map: 1 to 9
+
+- **Y:** y-axis spatial coordinate within the Montesinho park map: 2 to 9
+
+- month
+
+- day
+
+- **FFMC:** FFMC index from the FWI system: 18.7 to 96.20
+
+- **DMC:** DMC index from the FWI system: 1.1 to 291.3
+
+- **DC:** DC index from the FWI system: 7.9 to 860.6
+
+- **ISI:** ISI index from the FWI system: 0.0 to 56.10
+
+- **temp: temperature in Celsius degrees: 2.2 to 33.30**
+
+- **RH:relative humidity in %: 15.0 to 100**
+
+- **wind**
+
+- **rain**
+
+- **area**
+
+# ------------------------------------------------------------------------
+
+Data author: Sumit Mishra (owner)
+
+Link: https://www.kaggle.com/datasets/sumitm004/forest-fire-area
+
+Description: This dataset contains information about forest fires in the Montesinho Natural Park (Portugal), including:
+- Spatial coordinates (X, Y) within the park.
+- Temporal data (month, day).
+- Meteorological data:
+- Temperature (temp in °C)
+- Relative humidity (RH in %)
+- Wind speed (wind in km/h)
+- Rainfall (rain in mm/m²)
+- Fire Weather Index (FWI) components:
+- Fine Fuel Moisture Code (FFMC)
+- Duff Moisture Code (DMC)
+- Drought Code (DC)
+- Initial Spread Index (ISI)
+- Burnt area (area in hectares), most importantly.
 
 ### Preview your data
 
 Use some of the strategies you've learned in this class or picked up elsewhere to summarize and quickly explore your data.
 
 ```{r}
+
+summary(forest_fires)
+glimpse(forest_fires)
+head(forest_fires)
+tail(forest_fires)
+dim(forest_fires) # yay
 
 ```
 
@@ -63,6 +139,19 @@ Before you make plots, you must also:
   - Remember to use `na.rm = TRUE` if you have missing values that affect summaries!
 
 ```{r}
+
+# view(forest_fires)
+
+# Summary statistics for continuous variables
+summary(forest_fires[, c("temp", "RH", "wind", "rain", "area")])
+
+# Counts for categorical variables
+table(forest_fires$month)
+table(forest_fires$day)
+
+# Check for missing values
+colSums(is.na(forest_fires))
+
 
 ```
 
@@ -82,52 +171,154 @@ Each plot should have:
 
 Use the EDA Part 3 notes as your reference. Since this is an EDA assignment, your plots can look plain, but consider adding colors, themes, or interactivity for interpretability and visual appeal if you know how.
 
-### Plot 1
+\<\<\<\<\<\<\< HEAD \### Plot 1 - Histogram
 
 ```{r}
-# insert code here
+
+# Histogram of fire area, w/ outliers
+ggplot(forest_fires, aes(x = area)) +
+  geom_histogram(binwidth = 100, fill = "firebrick", color = "black") +
+  labs(title = "Distribution of Forest Fire Burnt Area (hectares)",
+       x = "Burnt Area (hectares)",
+       y = "Frequency") +
+  theme_minimal()
 
 ```
 
-Question this plot answers:
+Question this plot answers: how frequent the fires burn in different ranges of burnt area by hectares.
 
-Interpretation:
+Interpretation: It looks like most fires are pretty small, with a few outliers skewing the data to the right. With each histogram interval being 100 hectares, most of the 517 fires are under burn areas under 100 hectares.
 
-### Plot 2
+### Plot 2 - Scatterplot: Spatial distribution of fires
+
+For reference, this dataset contains information about **forest fires in Motesinho Park, Portugal**, including their location (coordinate on a localized map from 1 to 9 for the former and 2 to 9 for the latter), date, temperature, humidity, wind speed, and fire area (in hectares).
+
+```{r}
+# Plotting Spatial distribution of fires on X and Y coordinates
+ggplot(forest_fires, aes(x = X, y = Y)) + #localized lat and long coordinates for the dataset
+  geom_point(aes(size = area, color = temp), alpha = 0.8) +
+  labs(
+    title = "Spatial Distribution of Forest Fires in Montesinho Park, Portugal",
+    x = "X Coordinate",
+    y = "Y Coordinate",
+    size = "Burned Area (hectares)",
+    color = "Temperature (°C)",
+    caption = "Source: Sumit Mishra via Kaggle"
+  ) +
+  theme_minimal()
+```
+
+Question this plot answers: Where in the park do these fires mostly occur? Where do they not?
+
+Interpretation: It looks like most of the fires are in the NE and Southern areas of the map. When compared to a [topography map](https://www.montesinho.com/files/passeio-montesinho.pdf) of the park, it looks like the North and NE areas of the park have streams and a lake running through them. This is likely the reason that this area of the map looks untouched by the fires. Also, looking at trail pictures and Google Street View, the greenery and landscape is much more lush and green along the untouched portion, meaning that its harder to catch fire along the river and lake portions of the park in the North, NW and along the 2.5 X-coordinate line.
+PS: Localized latitude and longitude points were nicknamed by me so I'm not sure if there's a proper name for X, Y points relative to a local or reference map area.
+
+### Plot 3 - Frequency Polygon
 
 ```{r}
 # insert code here
+ggplot(forest_fires, aes(x = area)) + # this one displays counts
+  geom_freqpoly(aes(color = cut), binwidth = .1, linewidth = 0.75)
 
+ggplot(forest_fires, aes(x = area, y = after_stat(density))) + # this one displays density
+  geom_freqpoly(aes(color = cut), binwidth = .1, linewidth = 0.75)
 ```
 
-Question this plot answers:
+Question this plot answers: How often do fires occur by day of the week?
 
 Interpretation:
 
-### Plot 3
+# \### Plot 4 - Scatter plot: Wind speed vs. Burned area
+
+### Plot 1 - Humidity (RH) vs. burnt area (area)
 
 ```{r}
-# insert code here
+
+ggplot(forest_fires, aes(x = RH, y = area)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Humidity vs. Burnt Area",
+       x = "Relative Humidity (%)",
+       y = "Burnt Area (hectares)") +
+  theme_minimal()
 
 ```
 
-Question this plot answers:
+Question this plot answers: What is the relationship between humidity (RH) and burnt area (area)?
 
 Interpretation:
+The scatter plot shows a negative correlation between humidity and burnt area. Fires in low-humidity conditions (below 50%) tend to result in larger burnt areas, while fires in high-humidity conditions (above 80%) result in smaller burnt areas. 
+This suggests that low humidity dries out vegetation, making it more flammable and increasing fire severity, while high humidity suppresses fire spread.
 
-### Plot 4
+### Plot 2 - Distribution of Burnt Area (Hectares)
 
 ```{r}
-# insert code here
+
+library(ggplot2)
+
+ggplot(forest_fires, aes(x = area)) +
+  geom_histogram(binwidth = 10, fill = "firebrick", color = "black") +
+  labs(title = "Distribution of Burnt Area (Hectares)",
+       x = "Burnt Area (hectares)",
+       y = "Frequency") +
+  theme_minimal()
 
 ```
 
-Question this plot answers:
+Question this plot answers: What is the distribution of the burnt area (hectares)? Are there outliers?
 
 Interpretation:
+The histogram shows that most forest fires result in a small burnt area (less than 10 hectares), but a few extreme outliers exist where fires burn hundreds or even over 1,000 hectares. The data is highly right-skewed, meaning the majority of fires are small, but a small number are significantly larger. This highlights the uneven distribution of fire sizes and the potential for rare, extreme events.
+
+### Plot 3 - Days and months comparison of forest fire frequency
+
+```{r}
+
+# Bar plot of fire counts by month
+ggplot(forest_fires, aes(x = month, fill = month)) +
+  geom_bar() +
+  labs(title = "Forest Fire Counts by Month",
+       x = "Month",
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Question this plot answers: Which months experience the highest number of forest fires, and does this align with seasonal patterns?
+
+Interpretation: 
+- August (aug) and September (sep) have the highest number of fires.
+- Winter months (e.g., jan, feb) have the fewest fires.
+Forest fires are more common in summer and early autumn, likely due to hotter, drier conditions that increase fire risk.
+
+### Plot 4 - Wind speed influence on forest fire burnt area
+
+```{r}
+
+forest_fires %>%
+  ggplot(aes(x = wind, y = area)) +
+  geom_point(alpha = 0.5, color = "purple") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Burned Area vs. Wind Speed",
+    x = "Wind Speed",
+    y = "Burned Area (hectares)"
+  ) +
+  theme_minimal()
+
+```
+
+Question this plot answers: How does wind speed influence the size of the burnt area in forest fires?
+
+Interpretation: 
+- The trend line has a slight upward slope, suggesting that higher wind speeds may contribute to larger burnt areas. However, the relationship is not strong, as many data points are scattered far from the line.
+- Some fires with high wind speeds still result in small burnt areas, indicating that wind is not the only factor influencing fire spread.
+
+The scatter plot shows the relationship between wind speed (x-axis) and burnt area (y-axis). The red line represents a linear regression trend, which helps identify whether higher wind speeds are associated with larger burnt areas.
 
 ------------------------------------------------------------------------
 
 # Push to GitHub AND submit link on Canvas!!
 
-Assignment is due Friday 9/25 at 11:59 pm.
+Assignment is due Sunday 11/1/2026 at 11:59 pm (modified on Canvas).
